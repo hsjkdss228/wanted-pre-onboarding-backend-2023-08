@@ -4,6 +4,7 @@ module.exports = {
       jsc: {
         parser: {
           jsx: true,
+          decorators: true,
         },
       },
     }],

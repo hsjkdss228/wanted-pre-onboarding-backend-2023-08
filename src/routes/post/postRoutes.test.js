@@ -4,6 +4,11 @@ import context from 'jest-plugin-context';
 
 import server from '../../../app';
 
+jest.mock('reflect-metadata', () => jest.fn());
+jest.mock('../../data-source', () => ({
+  initialize: jest.fn(),
+}));
+
 const postsDto = [
   {
     id: 1,
@@ -18,10 +23,10 @@ const postsDto = [
 ];
 
 jest.mock(
-  '../../services/GetPostsService',
+  '../../repositories/PostRepository',
   () => ({
-    getPostsService: {
-      getPosts: jest.fn(() => postsDto),
+    postRepository: {
+      find: jest.fn(() => postsDto),
     },
   }),
 );
