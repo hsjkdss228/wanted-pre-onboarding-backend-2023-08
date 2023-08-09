@@ -2,7 +2,6 @@
 
 import appDataSource from '../data-source';
 
-import PostView from '../entities/post/PostView';
 import Post from '../entities/post/Post';
 import User from '../entities/user/User';
 
@@ -10,8 +9,17 @@ import PostNotFound from '../exceptions/post/PostNotFound';
 
 export default class PostRepository {
   async find() {
-    const postViewRepository = appDataSource.getRepository(PostView);
-    const postsDto = await postViewRepository.find();
+    const postRepository = appDataSource.getRepository(Post);
+
+    const postsDto = await postRepository
+      .createQueryBuilder('posts')
+      .select('posts.id', 'id')
+      .addSelect('posts.title', 'title')
+      .addSelect('users.id', 'userId')
+      .addSelect('users.name', 'authorName')
+      .leftJoin(User, 'users', 'users.id = posts.user_id')
+      .getRawMany();
+
     return postsDto;
   }
 

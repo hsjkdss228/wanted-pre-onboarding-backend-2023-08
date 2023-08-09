@@ -32,13 +32,21 @@ describe('postRoutes', () => {
     const postsDto = [
       {
         id: 1,
+        userId: 22,
+        authorName: '노승준',
         title: '제목 1',
-        descriptionText: '내용 1',
       },
       {
         id: 2,
-        title: '제목 2',
-        descriptionText: '내용 2',
+        userId: 22,
+        authorName: '노승준',
+        title: '제목 22',
+      },
+      {
+        id: 3,
+        userId: 5,
+        authorName: '오진욱',
+        title: '제목 3333',
       },
     ];
 
