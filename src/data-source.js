@@ -13,9 +13,9 @@ const appDataSource = new DataSource({
   database: database.name,
   synchronize: true,
   logging: true,
-  entities: ['src/entities/*.js'],
+  entities: ['src/entities/**/*.js'],
   cli: {
-    entitiesDir: 'src/entities',
+    entitiesDir: 'src/entities/**',
   },
 });
 

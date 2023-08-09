@@ -10,4 +10,13 @@ router.get('/posts', async (_, response) => {
     .send(postsDto);
 });
 
+router.get('/posts/:postId', async (request, response) => {
+  const postId = Number(request.params.postId);
+
+  const postDto = await postRepository.findOneBy(postId);
+
+  response.type('application/json')
+    .send(postDto);
+});
+
 export default router;
