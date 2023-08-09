@@ -6,6 +6,8 @@ import PostView from '../entities/post/PostView';
 import Post from '../entities/post/Post';
 import User from '../entities/user/User';
 
+import PostNotFound from '../exceptions/post/PostNotFound';
+
 export default class PostRepository {
   async find() {
     const postViewRepository = appDataSource.getRepository(PostView);
@@ -26,6 +28,10 @@ export default class PostRepository {
       .leftJoin(User, 'users', 'users.id = posts.user_id')
       .where('posts.id = :postId', { postId })
       .getRawOne();
+
+    if (!postDto) {
+      throw new PostNotFound();
+    }
 
     return postDto;
   }
