@@ -19,13 +19,11 @@ class UserEntity {
   }) encodedPassword = undefined;
 
   static create({
-    name,
     email,
     encodedPassword,
   }) {
     const userEntity = new UserEntity();
 
-    userEntity.name = name;
     userEntity.email = email;
     userEntity.encodedPassword = encodedPassword;
 
