@@ -1,22 +1,12 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import argon2 from 'argon2';
 
-@Entity('users')
-class User {
-  @PrimaryGeneratedColumn({
-    type: 'bigint',
-  }) id;
+export default class User {
+  constructor(email) {
+    this.email = email;
+    this.encodedPassword = '';
+  }
 
-  @Column({
-    type: 'varchar',
-    name: 'name',
-    length: 255,
-  }) name;
-
-  @Column({
-    type: 'varchar',
-    name: 'username',
-    length: 255,
-  }) username;
+  async changePassword(password) {
+    this.encodedPassword = await argon2.hash(password);
+  }
 }
-
-export default User;

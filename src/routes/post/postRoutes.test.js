@@ -33,19 +33,19 @@ describe('postRoutes', () => {
       {
         id: 1,
         userId: 22,
-        authorName: '노승준',
+        userEmail: 'seungjjun@naver.com',
         title: '제목 1',
       },
       {
         id: 2,
         userId: 22,
-        authorName: '노승준',
+        userEmail: 'seungjjun@naver.com',
         title: '제목 22',
       },
       {
         id: 3,
         userId: 5,
-        authorName: '오진욱',
+        userEmail: 'jingwook@gmail.com',
         title: '제목 3333',
       },
     ];
@@ -71,10 +71,10 @@ describe('postRoutes', () => {
     context('post가 존재하는 경우', () => {
       const postDto = {
         id: 1,
-        userId: 22,
-        authorName: '노승준',
         title: '제목 111',
         descriptionText: '내용 1111',
+        userId: 22,
+        userEmail: 'seungjjun@naver.com',
       };
 
       beforeEach(() => {
