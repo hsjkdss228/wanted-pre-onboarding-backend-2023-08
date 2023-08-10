@@ -11,7 +11,6 @@ export default class UserRepository {
     const userRepository = appDataSource.getRepository(UserEntity);
 
     const userEntity = UserEntity.create({
-      name: 'default',
       email,
       encodedPassword,
     });
