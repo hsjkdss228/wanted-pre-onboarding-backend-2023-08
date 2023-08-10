@@ -2,14 +2,14 @@
 
 import appDataSource from '../data-source';
 
-import Post from '../entities/post/Post';
+import PostEntity from '../entities/post/PostEntity';
 import UserEntity from '../entities/user/UserEntity';
 
 import PostNotFound from '../exceptions/post/PostNotFound';
 
 export default class PostRepository {
   async find() {
-    const postRepository = appDataSource.getRepository(Post);
+    const postRepository = appDataSource.getRepository(PostEntity);
 
     const postsDto = await postRepository
       .createQueryBuilder('posts')
@@ -24,7 +24,7 @@ export default class PostRepository {
   }
 
   async findOneBy(postId) {
-    const postRepository = appDataSource.getRepository(Post);
+    const postRepository = appDataSource.getRepository(PostEntity);
 
     const postDto = await postRepository
       .createQueryBuilder('posts')
