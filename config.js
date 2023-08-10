@@ -7,6 +7,7 @@ const config = {
     password: 'root-password',
     name: 'db',
   },
+  secret: 'YOULLNEVERKNOWWHATIHAVEDONE',
 };
 
 export default config;

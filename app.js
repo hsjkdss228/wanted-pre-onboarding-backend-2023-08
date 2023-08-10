@@ -5,6 +5,7 @@ import 'reflect-metadata';
 import homeRoutes from './src/routes/homeRoutes';
 import postRoutes from './src/routes/post/postRoutes';
 import userRoutes from './src/routes/user/userRoutes';
+import sessionRoutes from './src/routes/session/sessionRoutes';
 
 import config from './config';
 import appDataSource from './src/data-source';
@@ -12,7 +13,7 @@ import appDataSource from './src/data-source';
 const app = express();
 
 app.use(express.json());
-app.use(homeRoutes, postRoutes, userRoutes);
+app.use(homeRoutes, postRoutes, userRoutes, sessionRoutes);
 
 const { port } = config;
 

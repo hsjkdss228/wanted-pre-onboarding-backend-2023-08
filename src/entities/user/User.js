@@ -1,12 +1,21 @@
 import argon2 from 'argon2';
 
 export default class User {
-  constructor(email) {
+  constructor({
+    id = null,
+    email,
+    encodedPassword = '',
+  }) {
+    this.id = id;
     this.email = email;
-    this.encodedPassword = '';
+    this.encodedPassword = encodedPassword;
   }
 
   async changePassword(password) {
     this.encodedPassword = await argon2.hash(password);
+  }
+
+  async passwordMatches(password) {
+    return argon2.verify(this.encodedPassword, password);
   }
 }
