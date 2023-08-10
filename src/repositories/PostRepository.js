@@ -16,7 +16,7 @@ export default class PostRepository {
       .select('posts.id', 'id')
       .addSelect('posts.title', 'title')
       .addSelect('users.id', 'userId')
-      .addSelect('users.name', 'authorName')
+      .addSelect('users.email', 'userEmail')
       .leftJoin(UserEntity, 'users', 'users.id = posts.user_id')
       .getRawMany();
 
@@ -29,10 +29,10 @@ export default class PostRepository {
     const postDto = await postRepository
       .createQueryBuilder('posts')
       .select('posts.id', 'id')
-      .addSelect('users.id', 'userId')
-      .addSelect('users.name', 'authorName')
       .addSelect('posts.title', 'title')
       .addSelect('posts.description_text', 'descriptionText')
+      .addSelect('users.id', 'userId')
+      .addSelect('users.email', 'userEmail')
       .leftJoin(UserEntity, 'users', 'users.id = posts.user_id')
       .where('posts.id = :postId', { postId })
       .getRawOne();

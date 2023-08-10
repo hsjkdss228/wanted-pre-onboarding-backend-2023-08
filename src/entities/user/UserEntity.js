@@ -8,12 +8,6 @@ class UserEntity {
 
   @Column({
     type: 'varchar',
-    name: 'name',
-    length: 255,
-  }) name = undefined;
-
-  @Column({
-    type: 'varchar',
     name: 'email',
     length: 255,
   }) email = undefined;
