@@ -9,7 +9,7 @@ export default class SignUpService {
     email,
     password,
   }) {
-    const user = new User(email);
+    const user = new User({ email });
 
     await user.changePassword(password);
 
