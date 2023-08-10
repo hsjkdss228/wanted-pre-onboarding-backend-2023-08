@@ -4,13 +4,15 @@ import 'reflect-metadata';
 
 import homeRoutes from './src/routes/homeRoutes';
 import postRoutes from './src/routes/post/postRoutes';
+import userRoutes from './src/routes/user/userRoutes';
 
 import config from './config';
 import appDataSource from './src/data-source';
 
 const app = express();
 
-app.use(homeRoutes, postRoutes);
+app.use(express.json());
+app.use(homeRoutes, postRoutes, userRoutes);
 
 const { port } = config;
 
