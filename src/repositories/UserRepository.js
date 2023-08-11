@@ -4,7 +4,7 @@ import appDataSource from '../data-source';
 
 import UserEntity from '../entities/user/UserEntity';
 
-import User from '../entities/user/User';
+import User from '../models/user/User';
 
 export default class UserRepository {
   async findBy({

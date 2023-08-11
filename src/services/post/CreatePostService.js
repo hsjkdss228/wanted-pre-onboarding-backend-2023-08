@@ -3,7 +3,7 @@
 import { userRepository } from '../../repositories/UserRepository';
 import { postRepository } from '../../repositories/PostRepository';
 
-import Post from '../../entities/post/Post';
+import Post from '../../models/post/Post';
 
 import UserNotFound from '../../exceptions/user/UserNotFound';
 

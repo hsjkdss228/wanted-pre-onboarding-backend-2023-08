@@ -2,7 +2,7 @@
 
 import { userRepository } from '../../repositories/UserRepository';
 
-import User from '../../entities/user/User';
+import User from '../../models/user/User';
 
 export default class SignUpService {
   async signUp({

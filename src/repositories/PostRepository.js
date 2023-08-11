@@ -5,6 +5,8 @@ import appDataSource from '../data-source';
 import PostEntity from '../entities/post/PostEntity';
 import UserEntity from '../entities/user/UserEntity';
 
+import Post from '../models/post/Post';
+
 import PostNotFound from '../exceptions/post/PostNotFound';
 
 export default class PostRepository {
@@ -23,7 +25,7 @@ export default class PostRepository {
     return postsDto;
   }
 
-  async findOneBy(postId) {
+  async findOneDtoBy(postId) {
     const postRepository = appDataSource.getRepository(PostEntity);
 
     const postDto = await postRepository
@@ -44,6 +46,24 @@ export default class PostRepository {
     return postDto;
   }
 
+  async findOneBy({ postId }) {
+    const postRepository = appDataSource.getRepository(PostEntity);
+
+    const {
+      id,
+      userId,
+      title,
+      descriptionText,
+    } = await postRepository.findOneBy({ id: postId });
+
+    return new Post({
+      id,
+      userId,
+      title,
+      descriptionText,
+    });
+  }
+
   async save(post) {
     const postRepository = appDataSource.getRepository(PostEntity);
 
@@ -58,6 +78,17 @@ export default class PostRepository {
     const { id } = await postRepository.save(postEntity);
 
     return id;
+  }
+
+  async update(post) {
+    const postRepository = appDataSource.getRepository(PostEntity);
+
+    const { id, title, descriptionText } = post;
+
+    await postRepository.update(
+      { id },
+      { title, descriptionText },
+    );
   }
 }
 

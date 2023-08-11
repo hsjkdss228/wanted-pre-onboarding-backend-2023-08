@@ -2,7 +2,7 @@ import context from 'jest-plugin-context';
 
 import LoginService from './LoginService';
 
-import User from '../../entities/user/User';
+import User from '../../models/user/User';
 
 import UserNotFound from '../../exceptions/user/UserNotFound';
 import IncorrectPassword from '../../exceptions/login/IncorrectPassword';

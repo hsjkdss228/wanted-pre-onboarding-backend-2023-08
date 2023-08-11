@@ -32,7 +32,7 @@ router.post(
         .type('application/json')
         .send(loginResultDto);
     } catch (error) {
-      if (error instanceof (EmptyLoginInput || IncorrectPassword)) {
+      if (error instanceof EmptyLoginInput || IncorrectPassword) {
         response.status(400)
           .type('text/html')
           .send(error.message);

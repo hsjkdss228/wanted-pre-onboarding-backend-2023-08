@@ -2,7 +2,7 @@ import context from 'jest-plugin-context';
 
 import CreatePostService from './CreatePostService';
 
-import User from '../../entities/user/User';
+import User from '../../models/user/User';
 
 import UserNotFound from '../../exceptions/user/UserNotFound';
 
