@@ -7,6 +7,8 @@ import server from '../../../app';
 import { jwtUtil } from '../../utils/JwtUtil';
 
 import PostNotFound from '../../exceptions/post/PostNotFound';
+import UserNotFound from '../../exceptions/user/UserNotFound';
+import UserNotCreatedPost from '../../exceptions/post/UserNotCreatedPost';
 
 jest.mock('reflect-metadata', () => jest.fn());
 jest.mock('../../data-source', () => ({
@@ -14,14 +16,14 @@ jest.mock('../../data-source', () => ({
 }));
 
 const find = jest.fn();
-const findOneBy = jest.fn();
+const findOneDtoBy = jest.fn();
 
 jest.mock(
   '../../repositories/PostRepository',
   () => ({
     postRepository: {
       find: () => find(),
-      findOneBy: () => findOneBy(),
+      findOneDtoBy: () => findOneDtoBy(),
     },
   }),
 );
@@ -33,6 +35,17 @@ jest.mock(
   () => ({
     createPostService: {
       createPost: () => createPost(),
+    },
+  }),
+);
+
+const modifyPost = jest.fn();
+
+jest.mock(
+  '../../services/post/ModifyPostService',
+  () => ({
+    modifyPostService: {
+      modifyPost: () => modifyPost(),
     },
   }),
 );
@@ -79,7 +92,7 @@ describe('postRoutes', () => {
 
   context('GET /posts/:postId', () => {
     beforeEach(() => {
-      findOneBy.mockClear();
+      findOneDtoBy.mockClear();
     });
 
     context('post가 존재하는 경우', () => {
@@ -92,7 +105,7 @@ describe('postRoutes', () => {
       };
 
       beforeEach(() => {
-        findOneBy.mockReturnValueOnce(postDto);
+        findOneDtoBy.mockReturnValueOnce(postDto);
       });
 
       it('postDto 응답을 반환', (done) => {
@@ -106,7 +119,7 @@ describe('postRoutes', () => {
 
     context('post가 존재하지 않는 경우', () => {
       beforeEach(() => {
-        findOneBy.mockImplementation(() => {
+        findOneDtoBy.mockImplementation(() => {
           throw new PostNotFound();
         });
       });
@@ -186,6 +199,137 @@ describe('postRoutes', () => {
             expect(createPost).not.toBeCalled();
             done();
           });
+      });
+    });
+  });
+
+  context('PATCH /posts/:postId', () => {
+    const postId = 333;
+    const userId = 123;
+    const modifyPostRequestDto = {
+      title: '수정할려는 제목ㅋㅋㅋ',
+      descriptionText: '수정하려는 글 내용ㅋㅌㅌㅌㅋㅌ',
+    };
+
+    let accessToken;
+
+    beforeEach(() => {
+      modifyPost.mockClear();
+    });
+
+    context('Access Token, postId, ModifyPostRequestDto가 정상적으로 전달되면', () => {
+      beforeEach(() => {
+        accessToken = jwtUtil.encode(userId);
+      });
+
+      it('204 응답을 반환', (done) => {
+        request(server).patch(`/posts/${postId}`)
+          .set('Authorization', `Bearer ${accessToken}`)
+          .accept('application/json')
+          .send(modifyPostRequestDto)
+          .expect(204)
+          .end(() => {
+            expect(modifyPost).toBeCalled();
+            done();
+          });
+      });
+    });
+
+    context('Header에 Authorization이 없으면', () => {
+      it('400 미들웨어 예외 응답을 반환', (done) => {
+        request(server).patch(`/posts/${postId}`)
+          .accept('application/json')
+          .send(modifyPostRequestDto)
+          .expect(400)
+          .expect('Content-type', /text\/html/)
+          .expect('Access Token이 없거나 잘못되었습니다.')
+          .end(() => {
+            expect(modifyPost).not.toBeCalled();
+            done();
+          });
+      });
+    });
+
+    context('Header에 잘못된 Authorization이 포함되었으면', () => {
+      beforeEach(() => {
+        accessToken = 'BAD_ACCESS_TOKEN';
+      });
+
+      it('400 미들웨어 예외 응답을 반환', (done) => {
+        request(server).patch(`/posts/${postId}`)
+          .set('Authorization', `Bearer ${accessToken}`)
+          .accept('application/json')
+          .send(modifyPostRequestDto)
+          .expect(400)
+          .expect('Content-type', /text\/html/)
+          .expect('Access Token이 없거나 잘못되었습니다.')
+          .end(() => {
+            expect(modifyPost).not.toBeCalled();
+            done();
+          });
+      });
+    });
+
+    context('modifyPost로부터 예외가 전달되었을 경우', () => {
+      beforeEach(() => {
+        accessToken = jwtUtil.encode(userId);
+      });
+
+      context('UserNotFound의 경우', () => {
+        beforeEach(() => {
+          modifyPost.mockImplementation(() => {
+            throw new UserNotFound();
+          });
+        });
+
+        it('404 예외 응답을 반환', (done) => {
+          request(server).patch(`/posts/${postId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .accept('application/json')
+            .send(modifyPostRequestDto)
+            .expect(404)
+            .expect('Content-type', /text\/html/)
+            .expect('존재하지 않는 사용자입니다.')
+            .end(done);
+        });
+      });
+
+      context('PostNotFound의 경우', () => {
+        beforeEach(() => {
+          modifyPost.mockImplementation(() => {
+            throw new PostNotFound();
+          });
+        });
+
+        it('404 예외 응답을 반환', (done) => {
+          request(server).patch(`/posts/${postId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .accept('application/json')
+            .send(modifyPostRequestDto)
+            .expect(404)
+            .expect('Content-type', /text\/html/)
+            .expect('존재하지 않는 게시글입니다.')
+            .end(done);
+        });
+      });
+
+      context('UserNotCreatedPost의 경우', () => {
+        beforeEach(() => {
+          modifyPost.mockImplementation(() => {
+            throw new UserNotCreatedPost();
+          });
+        });
+
+        it('400 예외 응답을 반환', (done) => {
+          request(server).patch(`/posts/${postId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .accept('application/json')
+            .send(modifyPostRequestDto)
+            .expect(400)
+            .expect('Content-type', /text\/html/)
+            .expect('게시글 작성자가 아닙니다.')
+            .end(done);
+        });
       });
     });
   });
