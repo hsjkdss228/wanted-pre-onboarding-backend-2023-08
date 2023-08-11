@@ -6,15 +6,21 @@ export default class Post {
     userId,
     title,
     descriptionText,
+    deleted,
   }) {
     this.id = id;
     this.userId = userId;
     this.title = title;
     this.descriptionText = descriptionText;
+    this.deleted = deleted;
   }
 
   postedBy(user) {
     return this.userId === user.id;
+  }
+
+  notActive() {
+    return this.deleted;
   }
 
   modify({

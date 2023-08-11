@@ -23,6 +23,11 @@ class PostEntity {
     length: 4095,
   }) descriptionText = undefined;
 
+  @Column({
+    type: 'boolean',
+    name: 'deleted',
+  }) deleted = undefined;
+
   static create({
     userId,
     title,

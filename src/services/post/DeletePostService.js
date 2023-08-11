@@ -5,14 +5,13 @@ import { postRepository } from '../../repositories/PostRepository';
 
 import UserNotFound from '../../exceptions/user/UserNotFound';
 import PostNotFound from '../../exceptions/post/PostNotFound';
-import UserNotCreatedPost from '../../exceptions/post/UserNotCreatedPost';
 import PostAlreadyDeleted from '../../exceptions/post/PostAlreadyDeleted';
+import UserNotCreatedPost from '../../exceptions/post/UserNotCreatedPost';
 
-export default class ModifyPostService {
-  async modifyPost({
+export default class DeletePostService {
+  async deletePost({
     userId,
     postId,
-    modifyPostRequestDto,
   }) {
     const user = await userRepository.findBy({ userId });
 
@@ -34,10 +33,8 @@ export default class ModifyPostService {
       throw new UserNotCreatedPost();
     }
 
-    post.modify(modifyPostRequestDto);
-
-    await postRepository.update(post);
+    await postRepository.delete({ postId });
   }
 }
 
-export const modifyPostService = new ModifyPostService();
+export const deletePostService = new DeletePostService();
