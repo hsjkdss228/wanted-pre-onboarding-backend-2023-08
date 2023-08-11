@@ -43,6 +43,22 @@ export default class PostRepository {
 
     return postDto;
   }
+
+  async save(post) {
+    const postRepository = appDataSource.getRepository(PostEntity);
+
+    const { userId, title, descriptionText } = post;
+
+    const postEntity = PostEntity.create({
+      userId,
+      title,
+      descriptionText,
+    });
+
+    const { id } = await postRepository.save(postEntity);
+
+    return id;
+  }
 }
 
 export const postRepository = new PostRepository();

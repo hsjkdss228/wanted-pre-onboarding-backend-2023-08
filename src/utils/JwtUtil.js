@@ -16,7 +16,11 @@ export default class JwtUtil {
   }
 
   decode(accessToken) {
-    return null;
+    const { userId } = jwt.verify(
+      accessToken,
+      secret,
+    );
+    return userId;
   }
 }
 

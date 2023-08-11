@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('posts')
-class Post {
+class PostEntity {
   @PrimaryGeneratedColumn({
     type: 'bigint',
   }) id = undefined;
@@ -22,6 +22,20 @@ class Post {
     name: 'description_text',
     length: 4095,
   }) descriptionText = undefined;
+
+  static create({
+    userId,
+    title,
+    descriptionText,
+  }) {
+    const postEntity = new PostEntity();
+
+    postEntity.userId = userId;
+    postEntity.title = title;
+    postEntity.descriptionText = descriptionText;
+
+    return postEntity;
+  }
 }
 
-export default Post;
+export default PostEntity;

@@ -1,14 +1,21 @@
 /* eslint-disable class-methods-use-this */
 
 import appDataSource from '../data-source';
-import User from '../entities/user/User';
+
 import UserEntity from '../entities/user/UserEntity';
 
+import User from '../entities/user/User';
+
 export default class UserRepository {
-  async findBy(email) {
+  async findBy({
+    userId = null,
+    email = null,
+  }) {
     const userRepository = appDataSource.getRepository(UserEntity);
 
-    const userEntity = await userRepository.findOneBy({ email });
+    const userEntity = userId
+      ? await userRepository.findOneBy({ id: userId })
+      : await userRepository.findOneBy({ email });
 
     return !userEntity ? null : new User({
       id: userEntity.id,

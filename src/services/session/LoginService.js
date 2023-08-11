@@ -11,7 +11,7 @@ export default class LoginService {
     email,
     password,
   }) {
-    const user = await userRepository.findBy(email);
+    const user = await userRepository.findBy({ email });
 
     if (!user) {
       throw new UserNotFound();
