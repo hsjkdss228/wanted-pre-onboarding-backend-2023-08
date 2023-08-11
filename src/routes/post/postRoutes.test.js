@@ -3,6 +3,9 @@ import request from 'supertest';
 import context from 'jest-plugin-context';
 
 import server from '../../../app';
+
+import { jwtUtil } from '../../utils/JwtUtil';
+
 import PostNotFound from '../../exceptions/post/PostNotFound';
 
 jest.mock('reflect-metadata', () => jest.fn());
@@ -19,6 +22,17 @@ jest.mock(
     postRepository: {
       find: () => find(),
       findOneBy: () => findOneBy(),
+    },
+  }),
+);
+
+const createPost = jest.fn();
+
+jest.mock(
+  '../../services/post/CreatePostService',
+  () => ({
+    createPostService: {
+      createPost: () => createPost(),
     },
   }),
 );
@@ -103,6 +117,75 @@ describe('postRoutes', () => {
           .expect('Content-Type', /text\/html/)
           .expect('존재하지 않는 게시글입니다.')
           .end(done);
+      });
+    });
+  });
+
+  context('POST /posts', () => {
+    const createPostRequestDto = {
+      title: '새로 올릴려는 글 제목33',
+      descriptionText: '새로 올릴려는 글 내용3333',
+    };
+
+    beforeEach(() => {
+      createPost.mockClear();
+    });
+
+    context('Header에 Access Token이 포함되어 있으면', () => {
+      const createPostResultDto = { postId: 10 };
+
+      beforeEach(() => {
+        createPost.mockReturnValue();
+      });
+
+      it('생성된 게시글의 id를 반환', (done) => {
+        const userId = 11;
+        const accessToken = jwtUtil.encode(userId);
+
+        request(server).post('/posts')
+          .set('Authorization', `Bearer ${accessToken}`)
+          .accept('application/json')
+          .send(createPostRequestDto)
+          .expect(201)
+          .expect('Content-type', /application\/json/)
+          .expect(createPostResultDto)
+          .end(() => {
+            expect(createPost).toBeCalled();
+            done();
+          });
+      });
+    });
+
+    context('Header에 Access Token이 포함되어 있지 않으면', () => {
+      it('디코딩 오류 예외 응답을 반환', (done) => {
+        request(server).post('/posts')
+          .accept('application/json')
+          .send(createPostRequestDto)
+          .expect(400)
+          .expect('Content-type', /text\/html/)
+          .expect('Access Token이 없거나 잘못되었습니다.')
+          .end(() => {
+            expect(createPost).not.toBeCalled();
+            done();
+          });
+      });
+    });
+
+    context('Header에 잘못된 Access Token이 포함되어 있으면', () => {
+      it('디코딩 오류 예외 응답을 반환', (done) => {
+        const accessToken = 'BAD_ACCESS_TOKEN';
+
+        request(server).post('/posts')
+          .set('Authorization', `Bearer ${accessToken}`)
+          .accept('application/json')
+          .send(createPostRequestDto)
+          .expect(400)
+          .expect('Content-type', /text\/html/)
+          .expect('Access Token이 없거나 잘못되었습니다.')
+          .end(() => {
+            expect(createPost).not.toBeCalled();
+            done();
+          });
       });
     });
   });
