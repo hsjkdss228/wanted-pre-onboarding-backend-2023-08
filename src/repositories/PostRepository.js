@@ -8,6 +8,7 @@ import UserEntity from '../entities/user/UserEntity';
 import Post from '../models/post/Post';
 
 import PostNotFound from '../exceptions/post/PostNotFound';
+import PostAlreadyDeleted from '../exceptions/post/PostAlreadyDeleted';
 
 export default class PostRepository {
   async find() {
@@ -20,6 +21,7 @@ export default class PostRepository {
       .addSelect('users.id', 'userId')
       .addSelect('users.email', 'userEmail')
       .leftJoin(UserEntity, 'users', 'users.id = posts.user_id')
+      .where('posts.deleted = false')
       .getRawMany();
 
     return postsDto;
@@ -33,6 +35,7 @@ export default class PostRepository {
       .select('posts.id', 'id')
       .addSelect('posts.title', 'title')
       .addSelect('posts.description_text', 'descriptionText')
+      .addSelect('posts.deleted', 'deleted')
       .addSelect('users.id', 'userId')
       .addSelect('users.email', 'userEmail')
       .leftJoin(UserEntity, 'users', 'users.id = posts.user_id')
@@ -43,7 +46,26 @@ export default class PostRepository {
       throw new PostNotFound();
     }
 
-    return postDto;
+    const {
+      id,
+      title,
+      descriptionText,
+      deleted,
+      userId,
+      userEmail,
+    } = postDto;
+
+    if (deleted) {
+      throw new PostAlreadyDeleted();
+    }
+
+    return {
+      id,
+      title,
+      descriptionText,
+      userId,
+      userEmail,
+    };
   }
 
   async findOneBy({ postId }) {
@@ -54,6 +76,7 @@ export default class PostRepository {
       userId,
       title,
       descriptionText,
+      deleted,
     } = await postRepository.findOneBy({ id: postId });
 
     return new Post({
@@ -61,6 +84,7 @@ export default class PostRepository {
       userId,
       title,
       descriptionText,
+      deleted,
     });
   }
 
@@ -88,6 +112,15 @@ export default class PostRepository {
     await postRepository.update(
       { id },
       { title, descriptionText },
+    );
+  }
+
+  async delete({ postId }) {
+    const postRepository = appDataSource.getRepository(PostEntity);
+
+    await postRepository.update(
+      { id: postId },
+      { deleted: true },
     );
   }
 }

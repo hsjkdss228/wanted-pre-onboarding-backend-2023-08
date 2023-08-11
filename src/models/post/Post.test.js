@@ -13,6 +13,7 @@ describe('Post', () => {
         userId: 1,
         title: 'ㅋ',
         descriptionText: 'ㅌ',
+        deleted: false,
       });
     });
 
