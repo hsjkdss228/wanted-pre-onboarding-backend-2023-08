@@ -56,37 +56,74 @@ describe('postRoutes', () => {
   });
 
   context('GET /posts', () => {
-    const postsDto = [
-      {
-        id: 1,
-        userId: 22,
-        userEmail: 'seungjjun@naver.com',
-        title: '제목 1',
-      },
-      {
-        id: 2,
-        userId: 22,
-        userEmail: 'seungjjun@naver.com',
-        title: '제목 22',
-      },
-      {
-        id: 3,
-        userId: 5,
-        userEmail: 'jingwook@gmail.com',
-        title: '제목 3333',
-      },
-    ];
-
     beforeEach(() => {
-      find.mockReturnValue(postsDto);
+      find.mockClear();
     });
 
-    it('postsDto 응답을 반환', (done) => {
-      request(server).get('/posts')
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-        .expect(postsDto)
-        .end(done);
+    const postsDto = {
+      posts: [
+        {
+          id: 1,
+          title: '제목 1',
+          userId: 22,
+          userEmail: 'seungjjun@naver.com',
+        },
+        {
+          id: 2,
+          title: '제목 22',
+          userId: 22,
+          userEmail: 'seungjjun@naver.com',
+        },
+        {
+          id: 3,
+          title: '제목 3333',
+          userId: 5,
+          userEmail: 'jingwook@gmail.com',
+        },
+      ],
+      totalCount: 15,
+    };
+
+    context('페이지, 게시글 개수 쿼리 파라미터가 정상적으로 주어지는 경우', () => {
+      beforeEach(() => {
+        find.mockReturnValue(postsDto);
+      });
+
+      it('postsDto 응답을 반환', (done) => {
+        request(server).get('/posts')
+          .query({
+            page: '1',
+            count: '3',
+          })
+          .expect(200)
+          .expect('Content-Type', /application\/json/)
+          .expect(postsDto)
+          .end(done);
+      });
+    });
+
+    context('페이지, 게시글 개수 쿼리 파라미터가 주어지지 않은 경우', () => {
+      it('400 미들웨어 예외 응답을 반환', (done) => {
+        request(server).get('/posts')
+          .expect(400)
+          .expect('Content-Type', /text\/html/)
+          .expect('페이지 또는 게시글 개수 값이 주어지지 않았습니다.')
+          .end(done);
+      });
+    });
+
+    context('잘못된 페이지, 게시글 개수 쿼리 파라미터가 주어진 경우', () => {
+      it('400 미들웨어 예외 응답을 반환', (done) => {
+        request(server).get('/posts')
+          .query({
+            page: '1페이지',
+            count: '3개',
+          })
+          .expect(400)
+          .expect('Content-Type', /text\/html/)
+          .expect('잘못된 페이지 또는 게시글 개수 값입니다.')
+          .end(done);
+      });
     });
   });
 

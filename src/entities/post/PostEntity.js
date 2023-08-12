@@ -26,6 +26,7 @@ class PostEntity {
   @Column({
     type: 'boolean',
     name: 'deleted',
+    default: false,
   }) deleted = undefined;
 
   static create({
