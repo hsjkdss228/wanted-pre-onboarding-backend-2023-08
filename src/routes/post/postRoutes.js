@@ -12,13 +12,20 @@ import PostIsDeleted from '../../exceptions/post/PostIsDeleted';
 import UserNotFound from '../../exceptions/user/UserNotFound';
 import UserNotCreatedPost from '../../exceptions/post/UserNotCreatedPost';
 import PostAlreadyDeleted from '../../exceptions/post/PostAlreadyDeleted';
+import paginationMiddleware from '../../middlewares/paginationMiddleware';
 
 const router = express.Router();
 
 router.get(
   '/posts',
-  async (_, response) => {
-    const postsDto = await postRepository.find();
+  paginationMiddleware,
+  async (request, response) => {
+    const { page, count } = request.query;
+
+    const postsDto = await postRepository.find({
+      page: Number(page),
+      count: Number(count),
+    });
 
     response.type('application/json')
       .send(postsDto);

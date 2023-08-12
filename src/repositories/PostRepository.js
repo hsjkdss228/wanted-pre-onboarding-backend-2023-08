@@ -11,20 +11,36 @@ import PostNotFound from '../exceptions/post/PostNotFound';
 import PostAlreadyDeleted from '../exceptions/post/PostAlreadyDeleted';
 
 export default class PostRepository {
-  async find() {
+  async find({
+    page,
+    count,
+  }) {
     const postRepository = appDataSource.getRepository(PostEntity);
 
-    const postsDto = await postRepository
+    const queryResult = await postRepository
       .createQueryBuilder('posts')
-      .select('posts.id', 'id')
-      .addSelect('posts.title', 'title')
-      .addSelect('users.id', 'userId')
-      .addSelect('users.email', 'userEmail')
-      .leftJoin(UserEntity, 'users', 'users.id = posts.user_id')
+      .leftJoinAndMapOne(
+        'posts.user',
+        UserEntity,
+        'users',
+        'users.id = posts.userId',
+      )
       .where('posts.deleted = false')
-      .getRawMany();
+      .skip((page - 1) * count)
+      .take(count)
+      .getManyAndCount();
 
-    return postsDto;
+    return {
+      posts: queryResult[0].map(({
+        id, title, userId, user,
+      }) => ({
+        id,
+        title,
+        userId,
+        userEmail: user.email,
+      })),
+      totalCount: queryResult[1],
+    };
   }
 
   async findOneDtoBy(postId) {
