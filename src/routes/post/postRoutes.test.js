@@ -9,6 +9,7 @@ import { jwtUtil } from '../../utils/JwtUtil';
 import PostNotFound from '../../exceptions/post/PostNotFound';
 import UserNotFound from '../../exceptions/user/UserNotFound';
 import UserNotCreatedPost from '../../exceptions/post/UserNotCreatedPost';
+import PostAlreadyDeleted from '../../exceptions/post/PostAlreadyDeleted';
 
 jest.mock('reflect-metadata', () => jest.fn());
 jest.mock('../../data-source', () => ({
@@ -46,6 +47,17 @@ jest.mock(
   () => ({
     modifyPostService: {
       modifyPost: () => modifyPost(),
+    },
+  }),
+);
+
+const deletePost = jest.fn();
+
+jest.mock(
+  '../../services/post/DeletePostService',
+  () => ({
+    deletePostService: {
+      deletePost: () => deletePost(),
     },
   }),
 );
@@ -365,6 +377,45 @@ describe('postRoutes', () => {
             .expect(400)
             .expect('Content-type', /text\/html/)
             .expect('게시글 작성자가 아닙니다.')
+            .end(done);
+        });
+      });
+    });
+  });
+
+  context('DELETE /posts/:postId', () => {
+    const postId = 1;
+    const userId = 121;
+    const accessToken = jwtUtil.encode(userId);
+
+    context('Access Token, postId가 정상적으로 전달되면', () => {
+      it('204 응답을 반환', (done) => {
+        request(server).delete(`/posts/${postId}`)
+          .set('Authorization', `Bearer ${accessToken}`)
+          .accept('application/json')
+          .expect(204)
+          .end(() => {
+            expect(deletePost).toBeCalled();
+            done();
+          });
+      });
+    });
+
+    context('DeletePostService로부터 예외가 전달되었을 경우', () => {
+      beforeEach(() => {
+        deletePost.mockImplementation(() => {
+          throw new PostAlreadyDeleted();
+        });
+      });
+
+      context('PostAlreadyDeleted의 경우', () => {
+        it('404 예외 응답을 반환', (done) => {
+          request(server).delete(`/posts/${postId}`)
+            .set('Authorization', `Bearer ${accessToken}`)
+            .accept('application/json')
+            .expect(404)
+            .expect('Content-type', /text\/html/)
+            .expect('이미 삭제된 게시글입니다.')
             .end(done);
         });
       });

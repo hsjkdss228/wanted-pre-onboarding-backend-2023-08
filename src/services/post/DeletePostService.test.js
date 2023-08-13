@@ -1,6 +1,6 @@
 import context from 'jest-plugin-context';
 
-import ModifyPostService from './ModifyPostService';
+import DeletePostService from './DeletePostService';
 
 import User from '../../models/user/User';
 import Post from '../../models/post/Post';
@@ -8,6 +8,7 @@ import Post from '../../models/post/Post';
 import UserNotFound from '../../exceptions/user/UserNotFound';
 import PostNotFound from '../../exceptions/post/PostNotFound';
 import UserNotCreatedPost from '../../exceptions/post/UserNotCreatedPost';
+import PostAlreadyDeleted from '../../exceptions/post/PostAlreadyDeleted';
 
 const userFindBy = jest.fn();
 
@@ -21,42 +22,36 @@ jest.mock(
 );
 
 const postFindOneBy = jest.fn();
-const update = jest.fn();
+const postDelete = jest.fn();
 
 jest.mock(
   '../../repositories/PostRepository',
   () => ({
     postRepository: {
       findOneBy: () => postFindOneBy(),
-      update: () => update(),
+      delete: () => postDelete(),
     },
   }),
 );
 
-let modifyPostService;
+let deletePostService;
 
-describe('ModifyPostService', () => {
+describe('DeletePostService', () => {
   beforeEach(() => {
-    modifyPostService = new ModifyPostService();
+    deletePostService = new DeletePostService();
   });
 
   const userId = 1;
   const postId = 2;
-  const modifyPostRequestDto = {
-    title: '제목 11111111',
-    descriptionText: '내용 @@@@@@@@@@@@',
-  };
 
-  let spyModify;
-
-  context('modifyPost', () => {
+  context('deletePost', () => {
     beforeEach(() => {
       userFindBy.mockClear();
       postFindOneBy.mockClear();
-      update.mockClear();
+      postDelete.mockClear();
     });
 
-    context('정상적인 userId, postId, modifyPostRequestDto가 주어진 경우', () => {
+    context('정상적인 userId, postId가 주어진 경우', () => {
       beforeEach(() => {
         const user = new User({
           id: userId,
@@ -71,19 +66,15 @@ describe('ModifyPostService', () => {
           descriptionText: '훗',
         });
         postFindOneBy.mockReturnValue(post);
-
-        spyModify = jest.spyOn(post, 'modify');
       });
 
-      it('post.modify(), postRepository.update() 메서드를 호출', async () => {
-        await modifyPostService.modifyPost({
+      it('postRepository.delete() 메서드를 호출', async () => {
+        await deletePostService.deletePost({
           userId,
           postId,
-          modifyPostRequestDto,
         });
 
-        expect(spyModify).toBeCalledWith(modifyPostRequestDto);
-        expect(update).toBeCalled();
+        expect(postDelete).toBeCalled();
       });
     });
 
@@ -94,10 +85,9 @@ describe('ModifyPostService', () => {
 
       it('UserNotFound 예외를 발생', () => {
         expect(async () => {
-          await modifyPostService.modifyPost({
+          await deletePostService.deletePost({
             userId,
             postId,
-            modifyPostRequestDto,
           });
         }).rejects.toThrow(UserNotFound);
       });
@@ -115,12 +105,39 @@ describe('ModifyPostService', () => {
 
       it('PostNotFound 예외를 발생', () => {
         expect(async () => {
-          await modifyPostService.modifyPost({
+          await deletePostService.deletePost({
             userId,
             postId,
-            modifyPostRequestDto,
           });
         }).rejects.toThrow(PostNotFound);
+      });
+    });
+
+    context('이미 삭제 상태인 post인 경우', () => {
+      beforeEach(() => {
+        const user = new User({
+          id: userId,
+          email: 'hsjkdss228@naver.com',
+        });
+        userFindBy.mockReturnValue(user);
+
+        const post = new Post({
+          id: postId,
+          userId,
+          title: 'ㅎ',
+          descriptionText: '훗',
+          deleted: true,
+        });
+        postFindOneBy.mockReturnValue(post);
+      });
+
+      it('UserNotCreatedPost 예외를 발생', () => {
+        expect(async () => {
+          await deletePostService.deletePost({
+            userId,
+            postId,
+          });
+        }).rejects.toThrow(PostAlreadyDeleted);
       });
     });
 
@@ -143,10 +160,9 @@ describe('ModifyPostService', () => {
 
       it('UserNotCreatedPost 예외를 발생', () => {
         expect(async () => {
-          await modifyPostService.modifyPost({
+          await deletePostService.deletePost({
             userId,
             postId,
-            modifyPostRequestDto,
           });
         }).rejects.toThrow(UserNotCreatedPost);
       });
