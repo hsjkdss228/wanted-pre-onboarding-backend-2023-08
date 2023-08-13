@@ -2,11 +2,11 @@ import express from 'express';
 
 import { body, validationResult } from 'express-validator';
 
-import { loginService } from '../../services/session/LoginService';
+import { loginService } from '../services/session/LoginService';
 
-import EmptyLoginInput from '../../exceptions/login/EmptyLoginInput';
-import UserNotFound from '../../exceptions/user/UserNotFound';
-import IncorrectPassword from '../../exceptions/login/IncorrectPassword';
+import EmptyLoginInput from '../exceptions/login/EmptyLoginInput';
+import UserNotFound from '../exceptions/user/UserNotFound';
+import IncorrectPassword from '../exceptions/login/IncorrectPassword';
 
 const router = express.Router();
 

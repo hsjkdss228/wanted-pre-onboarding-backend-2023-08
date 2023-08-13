@@ -2,17 +2,17 @@ import request from 'supertest';
 
 import context from 'jest-plugin-context';
 
-import server from '../../../app';
+import server from '../../app';
 
-import { jwtUtil } from '../../utils/JwtUtil';
+import { jwtUtil } from '../utils/JwtUtil';
 
-import PostNotFound from '../../exceptions/post/PostNotFound';
-import UserNotFound from '../../exceptions/user/UserNotFound';
-import UserNotCreatedPost from '../../exceptions/post/UserNotCreatedPost';
-import PostAlreadyDeleted from '../../exceptions/post/PostAlreadyDeleted';
+import PostNotFound from '../exceptions/post/PostNotFound';
+import UserNotFound from '../exceptions/user/UserNotFound';
+import UserNotCreatedPost from '../exceptions/post/UserNotCreatedPost';
+import PostAlreadyDeleted from '../exceptions/post/PostAlreadyDeleted';
 
 jest.mock('reflect-metadata', () => jest.fn());
-jest.mock('../../data-source', () => ({
+jest.mock('../data-source', () => ({
   initialize: jest.fn(),
 }));
 
@@ -20,7 +20,7 @@ const find = jest.fn();
 const findOneDtoBy = jest.fn();
 
 jest.mock(
-  '../../repositories/PostRepository',
+  '../repositories/PostRepository',
   () => ({
     postRepository: {
       find: () => find(),
@@ -32,7 +32,7 @@ jest.mock(
 const createPost = jest.fn();
 
 jest.mock(
-  '../../services/post/CreatePostService',
+  '../services/post/CreatePostService',
   () => ({
     createPostService: {
       createPost: () => createPost(),
@@ -43,7 +43,7 @@ jest.mock(
 const modifyPost = jest.fn();
 
 jest.mock(
-  '../../services/post/ModifyPostService',
+  '../services/post/ModifyPostService',
   () => ({
     modifyPostService: {
       modifyPost: () => modifyPost(),
@@ -54,7 +54,7 @@ jest.mock(
 const deletePost = jest.fn();
 
 jest.mock(
-  '../../services/post/DeletePostService',
+  '../services/post/DeletePostService',
   () => ({
     deletePostService: {
       deletePost: () => deletePost(),
