@@ -5,9 +5,9 @@ import cors from 'cors';
 import 'reflect-metadata';
 
 import homeRoutes from './src/routes/homeRoutes';
-import postRoutes from './src/routes/post/postRoutes';
-import userRoutes from './src/routes/user/userRoutes';
-import sessionRoutes from './src/routes/session/sessionRoutes';
+import postRoutes from './src/routes/postRoutes';
+import userRoutes from './src/routes/userRoutes';
+import sessionRoutes from './src/routes/sessionRoutes';
 
 import config from './config';
 import appDataSource from './src/data-source';

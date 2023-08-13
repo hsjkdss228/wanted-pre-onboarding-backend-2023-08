@@ -1,18 +1,18 @@
 import express from 'express';
 
-import authenticationMiddleware from '../../middlewares/authenticationMiddleware';
+import authenticationMiddleware from '../middlewares/authenticationMiddleware';
 
-import { postRepository } from '../../repositories/PostRepository';
-import { createPostService } from '../../services/post/CreatePostService';
-import { modifyPostService } from '../../services/post/ModifyPostService';
-import { deletePostService } from '../../services/post/DeletePostService';
+import { postRepository } from '../repositories/PostRepository';
+import { createPostService } from '../services/post/CreatePostService';
+import { modifyPostService } from '../services/post/ModifyPostService';
+import { deletePostService } from '../services/post/DeletePostService';
 
-import PostNotFound from '../../exceptions/post/PostNotFound';
-import PostIsDeleted from '../../exceptions/post/PostIsDeleted';
-import UserNotFound from '../../exceptions/user/UserNotFound';
-import UserNotCreatedPost from '../../exceptions/post/UserNotCreatedPost';
-import PostAlreadyDeleted from '../../exceptions/post/PostAlreadyDeleted';
-import paginationMiddleware from '../../middlewares/paginationMiddleware';
+import PostNotFound from '../exceptions/post/PostNotFound';
+import PostIsDeleted from '../exceptions/post/PostIsDeleted';
+import UserNotFound from '../exceptions/user/UserNotFound';
+import UserNotCreatedPost from '../exceptions/post/UserNotCreatedPost';
+import PostAlreadyDeleted from '../exceptions/post/PostAlreadyDeleted';
+import paginationMiddleware from '../middlewares/paginationMiddleware';
 
 const router = express.Router();
 

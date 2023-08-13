@@ -2,17 +2,17 @@ import request from 'supertest';
 
 import context from 'jest-plugin-context';
 
-import server from '../../../app';
+import server from '../../app';
 
 jest.mock('reflect-metadata', () => jest.fn());
-jest.mock('../../data-source', () => ({
+jest.mock('../data-source', () => ({
   initialize: jest.fn(),
 }));
 
 const signUp = jest.fn();
 
 jest.mock(
-  '../../services/user/SignUpService',
+  '../services/user/SignUpService',
   () => ({
     signUpService: {
       signUp: () => signUp(),

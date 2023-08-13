@@ -2,9 +2,9 @@ import express from 'express';
 
 import { body, validationResult } from 'express-validator';
 
-import { signUpService } from '../../services/user/SignUpService';
+import { signUpService } from '../services/user/SignUpService';
 
-import InvalidSignUpInput from '../../exceptions/signup/InvalidSignUpInput';
+import InvalidSignUpInput from '../exceptions/signup/InvalidSignUpInput';
 
 const router = express.Router();
 
