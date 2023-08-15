@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  server-express:
+    image: wanted-pre-onboarding-backend-server
+    container_name: wanted-pre-onboarding-backend-server
+    ports:
+      - "8000:8000"
+    env_file: .env
+    networks:
+      - board-production
+    depends_on:
+      database-mysql:
+        condition: service_healthy
+
+  database-mysql:
+    image: mysql:8.0
+    container_name: wanted-pre-onboarding-backend-database
+    ports:
+      - "3306:3306"
+    env_file: .env
+    volumes:
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - board-production
+
+networks:
+  board-production:
