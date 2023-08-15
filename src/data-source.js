@@ -12,7 +12,7 @@ const appDataSource = new DataSource({
   password: database.password,
   database: database.name,
   synchronize: true,
-  logging: true,
+  logging: false,
   entities: ['src/entities/**/*.js'],
   cli: {
     entitiesDir: 'src/entities/**',
