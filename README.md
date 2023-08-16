@@ -9,17 +9,16 @@
 ### Prerequisites
 
 ```plaintext
-Docker version 24.0.2
-
-Docker Compose version v2.19.1
-
-Docker Image
-- mysql:8.0
+- Docker version 24.0.2
+- Docker Compose version v2.19.1
+- Docker Image
+  - mysql:8.0
 ```
 
 ### 서버 애플리케이션 이미지 생성
 
 ```bash
+cd wanted-pre-onboarding-backend-server
 docker build . -t wanted-pre-onboarding-backend-server
 ```
 
