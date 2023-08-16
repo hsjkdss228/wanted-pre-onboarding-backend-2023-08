@@ -52,7 +52,7 @@ docker compose up
 
 ## 시연 영상
 
-시연 영상 링크 추가 예정
+[![시연_영상](https://github.com/hsjkdss228/wanted-pre-onboarding-backend/assets/50052512/ce753297-b04e-47ac-b049-eb0adab71bb1)](https://youtu.be/GVpQZk-Jul4)
 
 ## 구현 방식 및 아키텍처
 
