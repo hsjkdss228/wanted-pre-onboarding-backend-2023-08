@@ -18,6 +18,7 @@
 ### 서버 애플리케이션 이미지 생성
 
 ```bash
+git clone git@github.com:hsjkdss228/wanted-pre-onboarding-backend.git
 cd wanted-pre-onboarding-backend
 docker build . -t wanted-pre-onboarding-backend-server
 ```
