@@ -18,7 +18,7 @@
 ### 서버 애플리케이션 이미지 생성
 
 ```bash
-cd wanted-pre-onboarding-backend-server
+cd wanted-pre-onboarding-backend
 docker build . -t wanted-pre-onboarding-backend-server
 ```
 
