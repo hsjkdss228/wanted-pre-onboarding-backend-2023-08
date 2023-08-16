@@ -5,8 +5,8 @@ import { postRepository } from '../../repositories/PostRepository';
 
 import UserNotFound from '../../exceptions/user/UserNotFound';
 import PostNotFound from '../../exceptions/post/PostNotFound';
+import PostIsDeleted from '../../exceptions/post/PostIsDeleted';
 import UserNotCreatedPost from '../../exceptions/post/UserNotCreatedPost';
-import PostAlreadyDeleted from '../../exceptions/post/PostAlreadyDeleted';
 
 export default class ModifyPostService {
   async modifyPost({
@@ -27,7 +27,7 @@ export default class ModifyPostService {
     }
 
     if (post.notActive()) {
-      throw new PostAlreadyDeleted();
+      throw new PostIsDeleted();
     }
 
     if (!post.postedBy(user)) {
